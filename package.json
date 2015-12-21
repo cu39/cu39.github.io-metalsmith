@@ -12,5 +12,8 @@
     "blog"
   ],
   "author": "cu39",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "metalsmith": "^2.1.0"
+  }
 }
