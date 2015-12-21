@@ -1,0 +1,16 @@
+{
+  "name": "cu39.github.io-metalsmith",
+  "version": "0.1.0",
+  "description": "",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "metalsmith",
+    "blog"
+  ],
+  "author": "cu39",
+  "license": "MIT"
+}
