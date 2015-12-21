@@ -7,7 +7,7 @@ module.exports = {
       'source': './src',
       'destination': './build',
       'metadata': {
-        'title': 'cu39 on github.io',
+        'sitename': 'cu39 on github.io',
         'description': ''
       },
     },
@@ -33,6 +33,16 @@ module.exports = {
   'create': function (env) {
     var Metalsmith = require('metalsmith');
     var ms = new Metalsmith(__dirname);
+
+    function load(pluginName, opts) {
+      var plugin = require("metalsmith-" + pluginName);
+      ms.use(plugin(opts));
+      return ms;
+    }
+
+    load('layouts', {
+      'engine': 'jade'
+    });
 
     var conf = this.conf(env);
 
