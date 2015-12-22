@@ -30,6 +30,11 @@ module.exports = {
     return true;
   },
 
+  '_highlight': function (code, lang, callback) {
+    var hljs = require('highlight.js');
+    return hljs.highlight(lang, code, false).value;
+  },
+
   'create': function (env) {
     var Metalsmith = require('metalsmith');
     var ms = new Metalsmith(__dirname);
@@ -39,6 +44,17 @@ module.exports = {
       ms.use(plugin(opts));
       return ms;
     }
+
+    /* !!! Carefylly arrange loaders to control the output !!! */
+
+    load('markdown', {
+      // See Marked options on https://github.com/chjj/marked
+      gfm: true,
+      tables: true,
+      breaks: false,
+      smartypants: true,
+      highlight: this._highlight
+    });
 
     load('layouts', {
       'engine': 'jade'

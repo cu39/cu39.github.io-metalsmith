@@ -16,9 +16,11 @@
   "dependencies": {
     "gulp": "^3.9.0",
     "gulp-util": "^3.0.7",
+    "highlight.js": "^9.0.0",
     "jade": "^1.11.0",
     "lodash": "^3.10.1",
     "metalsmith": "^2.1.0",
-    "metalsmith-layouts": "^1.4.2"
+    "metalsmith-layouts": "^1.4.2",
+    "metalsmith-markdown": "^0.2.1"
   }
 }
