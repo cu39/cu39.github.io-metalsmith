@@ -45,7 +45,17 @@ module.exports = {
       return ms;
     }
 
+    var conf = this.conf(env);
+
+    ms.source(conf.source);
+    ms.destination(conf.destination);
+    ms.metadata(conf.metadata);
+
     /* !!! Carefylly arrange loaders to control the output !!! */
+
+    load('ignore', [
+      'assets/**/*'
+    ]);
 
     load('markdown', {
       // See Marked options on https://github.com/chjj/marked
@@ -65,12 +75,6 @@ module.exports = {
     load('layouts', {
       'engine': 'jade'
     });
-
-    var conf = this.conf(env);
-
-    ms.source(conf.source);
-    ms.destination(conf.destination);
-    ms.metadata(conf.metadata);
 
     return ms;
   }
