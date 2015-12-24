@@ -1,9 +1,12 @@
+var path = require("path");
+
 module.exports = {
-  entry: "./src/assets/index.js",
+  entry: "./src/assets/index",
   output: {
-    path: __dirname + '/build/assets/',
+    path: path.join(__dirname, 'build', 'assets'),
     publicPath: "/",
-    filename: "bundle.js"
+    filename: "bundle.js",
+    chunkFilename: "[chunkhash].js"
   },
   module: {
     loaders: [
