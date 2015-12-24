@@ -11,9 +11,11 @@ var msConf = require('./metalsmith.config.js');
 
 gulp.task('default', ['serve']);
 
-gulp.task('serve', ['build', 'webserver', 'watch']);
-
 gulp.task('build', ['sass:build', 'webpack:build', 'metalsmith:build']);
+
+gulp.task('build-dev', ['sass:build-dev', 'webpack:build-dev', 'metalsmith:build-dev']);
+
+gulp.task('serve', ['build-dev', 'webserver', 'watch']);
 
 // Webpack
 
@@ -24,9 +26,27 @@ gulp.task('webpack:clean', function () {
 });
 
 gulp.task('webpack:build', ['webpack:clean'], function () {
+  var buildConfig = Object.create(webpackConfig);
+  buildConfig.plugins = buildConfig.plugins.concat(
+    new webpack.DefinePlugin({
+      "process.env": {
+        // This has effect on the react lib size
+        "NODE_ENV": JSON.stringify("production")
+      }
+    }),
+    new webpack.optimize.DedupePlugin(),
+    new webpack.optimize.UglifyJsPlugin()
+  );
+  webpack(buildConfig, function (err, stats) {
+    if (err) throw new gutil.PluginError("webpack", err);
+    gutil.log("[webpack] Stats:\n" + stats.toString({ colors: true }));
+  });
+});
+
+gulp.task('webpack:build-dev', ['webpack:clean'], function () {
   webpack(webpackConfig, function (err, stats) {
     if (err) throw new gutil.PluginError("webpack", err);
-    gutil.log("[webpack] Stats:\n" + stats.toString());
+    gutil.log("[webpack] Stats:\n" + stats.toString({ colors: true }));
   });
 });
 
@@ -39,6 +59,22 @@ gulp.task('css:clean', function () {
 });
 
 gulp.task('sass:build', ['css:clean'], function () {
+  gulp.src('./src/assets/sass/**/*.s[ac]ss')
+    .pipe(sass({
+      'outputStyle': 'compressed'
+    }).on('error', sass.logError))
+    .pipe(gulp.dest('./.tmp/css'))
+    .on('end', function () {
+      gulp.src('./.tmp/css/**/*.css')
+        .pipe(concat('style.css'))
+        .pipe(gulp.dest('./build/assets'))
+        .on('end', function () {
+          del(['./.tmp/']);
+        });
+    });
+});
+
+gulp.task('sass:build-dev', ['css:clean'], function () {
   gulp.src('./src/assets/sass/**/*.s[ac]ss')
     .pipe(sass({
       'outputStyle': 'nested'
@@ -65,6 +101,11 @@ gulp.task('metalsmith:clean', function () {
 
 gulp.task('metalsmith:build', ['metalsmith:clean'], function () {
   var ms = msConf.create('production');
+  ms.build(function (err) { if (err) throw  err; });
+});
+
+gulp.task('metalsmith:build-dev', ['metalsmith:clean'], function () {
+  var ms = msConf.create('development');
   ms.build(function (err) { if (err) throw  err; });
 });
 

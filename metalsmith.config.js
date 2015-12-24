@@ -67,12 +67,12 @@ module.exports = {
     });
 
     load('jade', {
-      'pretty': true
+      'pretty': env === 'development'
     });
 
     load('layouts', {
       'engine': 'jade',
-      'pretty': true
+      'pretty': env === 'development'
     });
 
     return ms;
