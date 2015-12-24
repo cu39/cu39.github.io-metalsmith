@@ -66,12 +66,6 @@ module.exports = {
       highlight: this._highlight
     });
 
-    load('permalinks', {
-      'relative': false,
-      'pattern': 'post/:date-:title',
-      'date': 'YYYY-MM-DD'
-    });
-
     load('jade', {
       'pretty': true
     });
