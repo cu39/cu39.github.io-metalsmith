@@ -72,8 +72,13 @@ module.exports = {
       'date': 'YYYY-MM-DD'
     });
 
+    load('jade', {
+      'pretty': true
+    });
+
     load('layouts', {
-      'engine': 'jade'
+      'engine': 'jade',
+      'pretty': true
     });
 
     return ms;
