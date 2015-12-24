@@ -24,7 +24,7 @@ gulp.task('webpack:clean', function () {
 });
 
 gulp.task('webpack:build', ['webpack:clean'], function () {
-  return webpack(webpackConfig, function (err, stats) {
+  webpack(webpackConfig, function (err, stats) {
     if (err) throw new gutil.PluginError("webpack", err);
     gutil.log("[webpack] Stats:\n" + stats.toString());
   });
@@ -39,7 +39,7 @@ gulp.task('css:clean', function () {
 });
 
 gulp.task('sass:build', ['css:clean'], function () {
-  return gulp.src('./src/assets/sass/**/*.s[ac]ss')
+  gulp.src('./src/assets/sass/**/*.s[ac]ss')
     .pipe(sass({
       'outputStyle': 'nested'
     }).on('error', sass.logError))
