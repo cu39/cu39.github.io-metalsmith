@@ -57,6 +57,20 @@ module.exports = {
       'assets/**/*'
     ]);
 
+    load('path-into-post', {
+      pattern: /\.md$/,
+      ext: '.html',
+      publicPathPrefix: '/'
+    });
+
+    load('collections', {
+      articles: {
+        pattern: 'blog/**/*.md',
+        sortBy: 'date',
+        reverse: true
+      }
+    });
+
     load('markdown', {
       // See Marked options on https://github.com/chjj/marked
       gfm: true,
@@ -64,6 +78,10 @@ module.exports = {
       breaks: false,
       smartypants: true,
       highlight: this._highlight
+    });
+
+    load('in-place', {
+      'engine': 'handlebars'
     });
 
     load('jade', {

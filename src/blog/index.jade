@@ -1,0 +1,10 @@
+---
+layout: layout.jade
+title: Blog Archives
+---
+
+ul
+  {{#each articles}}
+  li
+    a(href="{{this.path}}") {{title}} - {{dateFormat date}}
+  {{/each}}
