@@ -1,10 +1,10 @@
 var gulp = require('gulp');
 var gutil = require('gulp-util');
+var rename = require('gulp-rename');
 var del = require('del');
 var webpack = require('webpack');
 var webpackConfig = require('./webpack.config.js');
 var sass = require('gulp-sass');
-var concat = require('gulp-concat');
 var webserver = require('gulp-webserver');
 
 var hbs = require('handlebars');
@@ -66,35 +66,21 @@ gulp.task('css:clean', function () {
 });
 
 gulp.task('sass:build', ['css:clean'], function () {
-  gulp.src('./src/assets/sass/**/*.s[ac]ss')
+  gulp.src('./src/assets/sass/main.scss')
     .pipe(sass({
       'outputStyle': 'compressed'
     }).on('error', sass.logError))
-    .pipe(gulp.dest('./.tmp/css'))
-    .on('end', function () {
-      gulp.src('./.tmp/css/**/*.css')
-        .pipe(concat('style.css'))
-        .pipe(gulp.dest('./build/assets'))
-        .on('end', function () {
-          del(['./.tmp/']);
-        });
-    });
+    .pipe(rename('style.css'))
+    .pipe(gulp.dest('./build/assets'));
 });
 
 gulp.task('sass:build-dev', ['css:clean'], function () {
-  gulp.src('./src/assets/sass/**/*.s[ac]ss')
+  gulp.src('./src/assets/sass/main.scss')
     .pipe(sass({
       'outputStyle': 'nested'
     }).on('error', sass.logError))
-    .pipe(gulp.dest('./.tmp/css'))
-    .on('end', function () {
-      gulp.src('./.tmp/css/**/*.css')
-        .pipe(concat('style.css'))
-        .pipe(gulp.dest('./build/assets'))
-        .on('end', function () {
-          del(['./.tmp/']);
-        });
-    });
+    .pipe(rename('style.css'))
+    .pipe(gulp.dest('./build/assets'));
 });
 
 // Metalsmith
