@@ -5,6 +5,7 @@ var del = require('del');
 var webpack = require('webpack');
 var webpackConfig = require('./webpack.config.js');
 var sass = require('gulp-sass');
+var sourcemaps = require('gulp-sourcemaps');
 var webserver = require('gulp-webserver');
 
 var hbs = require('handlebars');
@@ -76,9 +77,11 @@ gulp.task('sass:build', ['css:clean'], function () {
 
 gulp.task('sass:build-dev', ['css:clean'], function () {
   gulp.src('./src/assets/sass/main.scss')
+    .pipe(sourcemaps.init())
     .pipe(sass({
       'outputStyle': 'nested'
     }).on('error', sass.logError))
+    .pipe(sourcemaps.write())
     .pipe(rename('style.css'))
     .pipe(gulp.dest('./build/assets'));
 });
