@@ -50,6 +50,7 @@ module.exports = {
     ms.source(conf.source);
     ms.destination(conf.destination);
     ms.metadata(conf.metadata);
+    ms.clean(false);
 
     /* !!! Carefylly arrange loaders to control the output !!! */
 
