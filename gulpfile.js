@@ -19,11 +19,20 @@ var msConf = require('./metalsmith.config.js');
 
 gulp.task('default', ['serve']);
 
-gulp.task('build', ['sass:build', 'webpack:build', 'metalsmith:build']);
+gulp.task('build', ['copy', 'sass:build', 'webpack:build', 'metalsmith:build']);
 
-gulp.task('build-dev', ['sass:build-dev', 'webpack:build-dev', 'metalsmith:build-dev']);
+gulp.task('build-dev', ['copy', 'sass:build-dev', 'webpack:build-dev', 'metalsmith:build-dev']);
 
 gulp.task('serve', ['build-dev', 'webserver', 'watch']);
+
+// Copy assets
+
+gulp.task('copy', ['bootstrap:fonts']);
+
+gulp.task('bootstrap:fonts', function () {
+  gulp.src('./node_modules/bootstrap-sass/assets/fonts/**/*')
+    .pipe(gulp.dest('./build/assets/fonts'));
+});
 
 // Webpack
 
