@@ -1,7 +1,3 @@
-@import 'bootstrap.scss';
-
-body {
-  background: yellow;
-}
-
-@import 'indented.sass';
+@import "variables.scss";
+@import "custom.sass";
+@import "bootstrap.scss";
