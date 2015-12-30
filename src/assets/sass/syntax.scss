@@ -1,0 +1,87 @@
+$monokai_fg : #F8F8F2;
+$monokai_bg : #272822;
+
+$monokai_gray_dark  : #75715E;
+$monokai_gray_light : #CFCFC2;
+$monokai_purple     : #AE81FF;
+$monokai_cyan       : #66D9EF;
+$monokai_magenta    : #F92672;
+$monokai_cream      : #E6DB74;
+$monokai_green      : #A6E22E;
+$monokai_orange     : #FD971F;
+
+$monokai_comment: darken($monokai_gray_light, 10%);
+
+pre {
+  border: none;
+  background: lighten($monokai-bg, 3%);
+  color: $monokai-fg;
+
+  code {
+    // http://highlightjs.readthedocs.org/en/latest/css-classes-reference.html
+    // General-purpose
+    .hljs-keyword { color: $monokai_magenta; font-weight: bold }
+    .hljs-built_in { color: $monokai_fg }
+    .hljs-type { color: $monokai_orange; font-weight: bold }
+    .hljs-literal { color: $monokai_purple } /* true, false, null */
+    .hljs-number { color: $monokai_purple }
+    .hljs-regexp { color: $monokai_orange }
+    .hljs-string { color: $monokai_cream }
+    .hljs-subst { color: $monokai_fg }
+    .hljs-symbol { color: $monokai_purple }
+    .hljs-class { color: $monokai_orange }
+    .hljs-function {
+      .hljs-title { color: $monokai_green }
+    }
+    // .hljs-params { }
+
+    // Meta
+    .hljs-comment { color: $monokai_comment; font-style: italic }
+    .hljs-doctag { color: $monokai_green }
+    .hljs-meta {
+      color: $monokai_orange;
+      .hljs-meta-keyword { color: $monokai_orange }
+      .hljs-meta-string { color: $monokai_cream }
+    }
+
+    // Tags, attributes, configs
+    .hljs-section { color: $monokai_magenta }
+    .hljs-tag {
+      color: $monokai_cyan;
+      .hljs-name { color: $monokai_cyan }
+      .hljs-attr { color: $monokai_green }
+    }
+    .hljs-name { color: $monokai_cyan }
+    .hljs-builtin-name { color: $monokai_purple }
+    .hljs-attr { color: $monokai_green }
+    .hljs-attribute { color: $monokai_green }
+    .hljs-variable { color: $monokai_orange }
+    
+    // Markup
+    .hljs-bullet { color: $monokai_cyan }
+    .hljs-code { color: $monokai_green }
+    .hljs-emphasis { color: $monokai_green; font-style: italic }
+    .hljs-strong { color: $monokai_green; font-weight: bold }
+    .hljs-formula { color: $monokai_purple }
+    .hljs-link { color: $monokai_magenta }
+    .hljs-quote { color: $monokai_cream }
+    
+    // CSS
+    .hljs-selector-tag { color: $monokai_magenta }
+    .hljs-selector-id { color: $monokai_cyan }
+    .hljs-selector-class { color: $monokai_green }
+    .hljs-selector-attr { color: $monokai_orange }
+    .hljs-selector-pseudo { color: $monokai_cream }
+    code.lang-css {
+      .hljs-attribute { color: $monokai_cyan }
+    }
+
+    // Templates
+    .hljs-template-tag { color: $monokai_magenta }
+    .hljs-template-variable { color: $monokai_green }
+
+    // Diff
+    .hljs-addition { color: $monokai_green }
+    .hljs-deletion { color: $monokai_orange }
+  }
+}
