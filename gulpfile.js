@@ -31,19 +31,21 @@ gulp.task('copy', ['bootstrap:fonts']);
 
 gulp.task('bootstrap:fonts', function () {
   gulp.src('./node_modules/bootstrap-sass/assets/fonts/**/*')
-    .pipe(gulp.dest('./build/assets/fonts'));
+    .pipe(gulp.dest('./build/assets/fonts'))
+    .pipe(gulp.dest('./.tmp/assets/fonts'));
 });
 
 // Webpack
 
 gulp.task('webpack:clean', function () {
   return del([
-      './build/assets/bundle.js'
+      './{build,.tmp}/assets/bundle.js'
     ]);
 });
 
 gulp.task('webpack:build', ['webpack:clean'], function () {
   var buildConfig = Object.create(webpackConfig);
+  buildConfig.output.path = './build/assets';
   buildConfig.plugins = buildConfig.plugins.concat(
     new webpack.DefinePlugin({
       "process.env": {
@@ -61,7 +63,9 @@ gulp.task('webpack:build', ['webpack:clean'], function () {
 });
 
 gulp.task('webpack:build-dev', ['webpack:clean'], function () {
-  webpack(webpackConfig, function (err, stats) {
+  var buildConfig = Object.create(webpackConfig);
+  buildConfig.output.path = './.tmp/assets';
+  webpack(buildConfig, function (err, stats) {
     if (err) throw new gutil.PluginError("webpack", err);
     gutil.log("[webpack] Stats:\n" + stats.toString({ colors: true }));
   });
@@ -71,7 +75,7 @@ gulp.task('webpack:build-dev', ['webpack:clean'], function () {
 
 gulp.task('css:clean', function () {
   return del([
-      './build/assets/style.css'
+      './{build,.tmp}/assets/style.css'
     ]);
 });
 
@@ -92,15 +96,15 @@ gulp.task('sass:build-dev', ['css:clean'], function () {
     }).on('error', sass.logError))
     .pipe(sourcemaps.write())
     .pipe(rename('style.css'))
-    .pipe(gulp.dest('./build/assets'));
+    .pipe(gulp.dest('./.tmp/assets'));
 });
 
 // Metalsmith
 
 gulp.task('metalsmith:clean', function () {
   return del([
-      './build/**/*.html',
-      '!./build/assets/**/*'
+      './{build,.tmp}/**/*.html',
+      '!./{build,.tmp}/assets/**/*'
     ]);
 });
 
@@ -117,7 +121,7 @@ gulp.task('metalsmith:build-dev', ['metalsmith:clean'], function () {
 // Webserver
 
 gulp.task('webserver', function (callback) {
-  gulp.src('./build')
+  gulp.src('./.tmp')
     .pipe(webserver({
       livereload: true,
       directoryListing: false,
@@ -128,10 +132,10 @@ gulp.task('webserver', function (callback) {
 // Watch
 
 gulp.task('watch', function (callback) {
-  gulp.watch('src/assets/js/**/*.js', ['webpack:build']);
-  gulp.watch('src/assets/sass/**/*', ['sass:build']);
+  gulp.watch('src/assets/js/**/*.js', ['webpack:build-dev']);
+  gulp.watch('src/assets/sass/**/*', ['sass:build-dev']);
   gulp.watch(
     ['src/**/*.html', 'src/**/*.{md,jade}', 'layouts/**/*.jade'],
-    ['webpack:build', 'sass:build', 'metalsmith:build']
+    ['webpack:build-dev', 'sass:build-dev', 'metalsmith:build-dev']
   );
 });

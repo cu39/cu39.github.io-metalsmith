@@ -5,14 +5,17 @@ module.exports = {
   '_conf': {
     'default': {
       'source': './src',
-      'destination': './build',
       'metadata': {
         'sitename': 'cu39 on github.io',
         'description': ''
       },
     },
-    'development': {},
-    'production': {}
+    'development': {
+      'destination': './.tmp'
+    },
+    'production': {
+      'destination': './build'
+    }
   },
 
   'conf': function (env) {
