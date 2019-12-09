@@ -1,0 +1,9 @@
+---
+layout: layout.pug
+title: Blog Archives
+---
+
+ul
+  each item in articles
+    li
+      a(href=item.permalink) #{item.title} - #{item.formattedDate}

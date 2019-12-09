@@ -1,5 +1,7 @@
 'use strict';
 
+const moment = require('moment');
+
 module.exports = {
 
   '_conf': {
@@ -61,10 +63,15 @@ module.exports = {
       'assets/**/*'
     ]);
 
-    load('path-into-post', {
-      pattern: /\.md$/,
-      ext: '.html',
-      publicPathPrefix: '/'
+    ms.use(function(files, metalsmith, done) {
+      const ptn = /\.md$/;
+      Object.keys(files).forEach((path) => {
+        if (!ptn.test(path)) { return; }
+        const data = files[path];
+        data.formattedDate = moment(data.date).format('YYYY-MM-DD');
+        data.permalink = '/' + path.replace(ptn, '.html');
+      });
+      done();
     });
 
     load('collections', {
@@ -85,15 +92,15 @@ module.exports = {
     });
 
     load('in-place', {
-      'engine': 'handlebars'
+      'pattern': 'blog/**/*'
     });
 
-    load('jade', {
+    load('pug', {
       'pretty': env === 'development'
     });
 
     load('layouts', {
-      'engine': 'jade',
+      'engine': 'pug',
       'pretty': env === 'development'
     });
 

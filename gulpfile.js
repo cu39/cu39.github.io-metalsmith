@@ -8,13 +8,6 @@ var sass = require('gulp-sass');
 var sourcemaps = require('gulp-sourcemaps');
 var webserver = require('gulp-webserver');
 
-var hbs = require('handlebars');
-var moment = require('moment');
-
-hbs.registerHelper('dateFormat', function(date) {
-  return moment(date).format("MMM D, YYYY");
-});
-
 var msConf = require('./metalsmith.config.js');
 
 gulp.task('default', ['serve']);
@@ -135,7 +128,7 @@ gulp.task('watch', function (callback) {
   gulp.watch('src/assets/js/**/*.js', ['webpack:build-dev']);
   gulp.watch('src/assets/sass/**/*', ['sass:build-dev']);
   gulp.watch(
-    ['src/**/*.html', 'src/**/*.{md,jade}', 'layouts/**/*.jade'],
+    ['src/**/*.html', 'src/**/*.{md,pug}', 'layouts/**/*.pug'],
     ['webpack:build-dev', 'sass:build-dev', 'metalsmith:build-dev']
   );
 });

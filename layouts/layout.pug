@@ -1,16 +1,16 @@
 doctype html
 html
   head
-    include _head.jade
+    include _head.pug
   body
     .container
       .row
         header.col-lg-8.col-lg-offset-2.col-md-8.col-md-offset-2.col-sm-10.col-sm-offset-1.col-xs-12
-          include _header.jade
+          include _header.pug
       .row
         main.col-lg-8.col-lg-offset-2.col-md-8.col-md-offset-2.col-sm-10.col-sm-offset-1.col-xs-12
           != contents
       .row
         aside.footer.col-lg-8.col-lg-offset-2.col-md-8.col-md-offset-2.col-sm-10.col-sm-offset-1.col-xs-12
-          include _footer.jade
-    include _foot_scripts.jade
+          include _footer.pug
+    include _foot_scripts.pug

@@ -1,7 +1,7 @@
 ---
 title: First post
 date: 2015-12-22
-layout: layout.jade
+layout: layout.pug
 ---
 
 This is my **first** *blog post*.
