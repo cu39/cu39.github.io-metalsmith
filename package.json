@@ -19,7 +19,7 @@
     "babel-preset-es2015": "^6.3.13",
     "bootstrap-sass": "^3.3.6",
     "del": "^2.2.0",
-    "grunt": "^0.4.5",
+    "grunt": "^1.0.4",
     "grunt-build-control": "^0.6.2",
     "gulp": "^4.0.2",
     "gulp-rename": "^1.2.2",
