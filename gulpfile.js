@@ -10,106 +10,125 @@ var webserver = require('gulp-webserver');
 
 var msConf = require('./metalsmith.config.js');
 
-gulp.task('default', ['serve']);
-
-gulp.task('build', ['copy', 'sass:build', 'webpack:build', 'metalsmith:build']);
-
-gulp.task('build-dev', ['copy', 'sass:build-dev', 'webpack:build-dev', 'metalsmith:build-dev']);
-
-gulp.task('serve', ['build-dev', 'webserver', 'watch']);
-
 // Copy assets
 
-gulp.task('copy', ['bootstrap:fonts']);
-
-gulp.task('bootstrap:fonts', function () {
+gulp.task('bootstrap:fonts', function (done) {
   gulp.src('./node_modules/bootstrap-sass/assets/fonts/**/*')
     .pipe(gulp.dest('./build/assets/fonts'))
     .pipe(gulp.dest('./.tmp/assets/fonts'));
+  done();
 });
+
+gulp.task('copy', gulp.parallel('bootstrap:fonts'));
 
 // Webpack
 
-gulp.task('webpack:clean', function () {
+gulp.task('webpack:clean', function (done) {
   return del([
-      './{build,.tmp}/assets/bundle.js'
-    ]);
+    './{build,.tmp}/assets/bundle.js'
+  ]);
+  done();
 });
 
-gulp.task('webpack:build', ['webpack:clean'], function () {
-  var buildConfig = Object.create(webpackConfig);
-  buildConfig.output.path = './build/assets';
-  buildConfig.plugins = buildConfig.plugins.concat(
-    new webpack.DefinePlugin({
-      "process.env": {
-        // This has effect on the react lib size
-        "NODE_ENV": JSON.stringify("production")
-      }
-    }),
-    new webpack.optimize.DedupePlugin(),
-    new webpack.optimize.UglifyJsPlugin()
-  );
-  webpack(buildConfig, function (err, stats) {
-    if (err) throw new gutil.PluginError("webpack", err);
-    gutil.log("[webpack] Stats:\n" + stats.toString({ colors: true }));
-  });
-});
+gulp.task('webpack:build', gulp.series(
+  'webpack:clean',
+  function (done) {
+    var buildConfig = Object.create(webpackConfig);
+    buildConfig.output.path = './build/assets';
+    buildConfig.plugins = buildConfig.plugins.concat(
+      new webpack.DefinePlugin({
+        "process.env": {
+          // This has effect on the react lib size
+          "NODE_ENV": JSON.stringify("production")
+        }
+      }),
+      new webpack.optimize.DedupePlugin(),
+      new webpack.optimize.UglifyJsPlugin()
+    );
+    webpack(buildConfig, function (err, stats) {
+      if (err) throw new gutil.PluginError("webpack", err);
+      gutil.log("[webpack] Stats:\n" + stats.toString({ colors: true }));
+    });
+    done();
+  })
+);
 
-gulp.task('webpack:build-dev', ['webpack:clean'], function () {
-  var buildConfig = Object.create(webpackConfig);
-  buildConfig.output.path = './.tmp/assets';
-  webpack(buildConfig, function (err, stats) {
-    if (err) throw new gutil.PluginError("webpack", err);
-    gutil.log("[webpack] Stats:\n" + stats.toString({ colors: true }));
-  });
-});
+gulp.task('webpack:build-dev', gulp.series(
+  'webpack:clean',
+  function (done) {
+    var buildConfig = Object.create(webpackConfig);
+    buildConfig.output.path = './.tmp/assets';
+    webpack(buildConfig, function (err, stats) {
+      if (err) throw new gutil.PluginError("webpack", err);
+      gutil.log("[webpack] Stats:\n" + stats.toString({ colors: true }));
+    });
+    done();
+  })
+);
 
 // Sass
 
-gulp.task('css:clean', function () {
+gulp.task('css:clean', function (done) {
   return del([
-      './{build,.tmp}/assets/style.css'
-    ]);
+    './{build,.tmp}/assets/style.css'
+  ]);
+  done();
 });
 
-gulp.task('sass:build', ['css:clean'], function () {
-  gulp.src('./src/assets/sass/main.scss')
-    .pipe(sass({
-      'outputStyle': 'compressed'
-    }).on('error', sass.logError))
-    .pipe(rename('style.css'))
-    .pipe(gulp.dest('./build/assets'));
-});
+gulp.task('sass:build', gulp.series(
+  'css:clean',
+  function (done) {
+    gulp.src('./src/assets/sass/main.scss')
+      .pipe(sass({
+        'outputStyle': 'compressed'
+      }).on('error', sass.logError))
+      .pipe(rename('style.css'))
+      .pipe(gulp.dest('./build/assets'));
+    done();
+  })
+);
 
-gulp.task('sass:build-dev', ['css:clean'], function () {
-  gulp.src('./src/assets/sass/main.scss')
-    .pipe(sourcemaps.init())
-    .pipe(sass({
-      'outputStyle': 'nested'
-    }).on('error', sass.logError))
-    .pipe(sourcemaps.write())
-    .pipe(rename('style.css'))
-    .pipe(gulp.dest('./.tmp/assets'));
-});
+gulp.task('sass:build-dev', gulp.series(
+  'css:clean',
+  function (done) {
+    gulp.src('./src/assets/sass/main.scss')
+      .pipe(sourcemaps.init())
+      .pipe(sass({
+        'outputStyle': 'nested'
+      }).on('error', sass.logError))
+      .pipe(sourcemaps.write())
+      .pipe(rename('style.css'))
+      .pipe(gulp.dest('./.tmp/assets'));
+    done();
+  })
+);
 
 // Metalsmith
 
 gulp.task('metalsmith:clean', function () {
   return del([
-      './{build,.tmp}/**/*.html',
-      '!./{build,.tmp}/assets/**/*'
-    ]);
+    './{build,.tmp}/**/*.html',
+    '!./{build,.tmp}/assets/**/*'
+  ]);
 });
 
-gulp.task('metalsmith:build', ['metalsmith:clean'], function () {
-  var ms = msConf.create('production');
-  ms.build(function (err) { if (err) throw  err; });
-});
+gulp.task('metalsmith:build', gulp.series(
+  'metalsmith:clean',
+  function (done) {
+    var ms = msConf.create('production');
+    ms.build(function (err) { if (err) throw  err; });
+    done();
+  })
+);
 
-gulp.task('metalsmith:build-dev', ['metalsmith:clean'], function () {
-  var ms = msConf.create('development');
-  ms.build(function (err) { if (err) throw  err; });
-});
+gulp.task('metalsmith:build-dev', gulp.series(
+  'metalsmith:clean',
+  function (done) {
+    var ms = msConf.create('development');
+    ms.build(function (err) { if (err) throw  err; });
+    done();
+  })
+);
 
 // Webserver
 
@@ -125,10 +144,46 @@ gulp.task('webserver', function (callback) {
 // Watch
 
 gulp.task('watch', function (callback) {
-  gulp.watch('src/assets/js/**/*.js', ['webpack:build-dev']);
-  gulp.watch('src/assets/sass/**/*', ['sass:build-dev']);
   gulp.watch(
-    ['src/**/*.html', 'src/**/*.{md,pug}', 'layouts/**/*.pug'],
-    ['webpack:build-dev', 'sass:build-dev', 'metalsmith:build-dev']
+    'src/assets/js/**/*.js',
+    gulp.task('webpack:build-dev')
+  );
+  gulp.watch(
+    'src/assets/sass/**/*',
+    gulp.task('sass:build-dev')
+  );
+  gulp.watch(
+    [
+      'src/**/*.html',
+      'src/**/*.{md,pug}',
+      'layouts/**/*.pug'
+    ],
+    gulp.series(
+      'webpack:build-dev',
+      'sass:build-dev',
+      'metalsmith:build-dev'
+    )
   );
 });
+
+gulp.task('build', gulp.series(
+  'copy',
+  'sass:build',
+  'webpack:build',
+  'metalsmith:build'
+));
+
+gulp.task('build-dev', gulp.series(
+  'copy',
+  'sass:build-dev',
+  'webpack:build-dev',
+  'metalsmith:build-dev'
+));
+
+gulp.task('serve', gulp.parallel(
+  'build-dev',
+  'webserver',
+  'watch'
+));
+
+gulp.task('default', gulp.parallel('serve'));
