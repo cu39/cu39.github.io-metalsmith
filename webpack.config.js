@@ -9,8 +9,8 @@ module.exports = {
     chunkFilename: "[chunkhash].js"
   },
   module: {
-    loaders: [
-      { test: /\.js$/, loader: "babel" }
+    rules: [
+      { test: /\.js$/, loader: "babel-loader" }
     ]
   },
   plugins: []

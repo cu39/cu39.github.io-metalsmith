@@ -1,3 +1,4 @@
+var path = require('path');
 var gulp = require('gulp');
 var gutil = require('gulp-util');
 var rename = require('gulp-rename');
@@ -33,18 +34,9 @@ gulp.task('webpack:clean', function (done) {
 gulp.task('webpack:build', gulp.series(
   'webpack:clean',
   function (done) {
-    var buildConfig = Object.create(webpackConfig);
-    buildConfig.output.path = './build/assets';
-    buildConfig.plugins = buildConfig.plugins.concat(
-      new webpack.DefinePlugin({
-        "process.env": {
-          // This has effect on the react lib size
-          "NODE_ENV": JSON.stringify("production")
-        }
-      }),
-      new webpack.optimize.DedupePlugin(),
-      new webpack.optimize.UglifyJsPlugin()
-    );
+    var buildConfig = Object.assign({}, webpackConfig);
+    buildConfig.mode = 'production';
+    buildConfig.output.path = path.join(__dirname, 'build', 'assets');
     webpack(buildConfig, function (err, stats) {
       if (err) throw new gutil.PluginError("webpack", err);
       gutil.log("[webpack] Stats:\n" + stats.toString({ colors: true }));
@@ -56,8 +48,9 @@ gulp.task('webpack:build', gulp.series(
 gulp.task('webpack:build-dev', gulp.series(
   'webpack:clean',
   function (done) {
-    var buildConfig = Object.create(webpackConfig);
-    buildConfig.output.path = './.tmp/assets';
+    var buildConfig = Object.assign({}, webpackConfig);
+    buildConfig.mode = 'development';
+    buildConfig.output.path = path.join(__dirname, '.tmp', 'assets');
     webpack(buildConfig, function (err, stats) {
       if (err) throw new gutil.PluginError("webpack", err);
       gutil.log("[webpack] Stats:\n" + stats.toString({ colors: true }));
