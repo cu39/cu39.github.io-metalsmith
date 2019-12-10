@@ -8,7 +8,7 @@ var webpack = require('webpack');
 var webpackConfig = require('./webpack.config.js');
 var sass = require('gulp-sass');
 var sourcemaps = require('gulp-sourcemaps');
-var webserver = require('gulp-webserver');
+var connect = require('gulp-connect');
 
 var msConf = require('./metalsmith.config.js');
 
@@ -56,6 +56,7 @@ gulp.task('webpack:build-dev', gulp.series(
       if (err) throw new PluginError("webpack", err);
       log.error("[webpack] Stats:\n" + stats.toString({ colors: true }));
     });
+    connect.reload();
     done();
   })
 );
@@ -66,7 +67,6 @@ gulp.task('css:clean', function (done) {
   return del([
     './{build,.tmp}/assets/style.css'
   ]);
-  done();
 });
 
 gulp.task('sass:build', gulp.series(
@@ -92,7 +92,8 @@ gulp.task('sass:build-dev', gulp.series(
       }).on('error', sass.logError))
       .pipe(sourcemaps.write())
       .pipe(rename('style.css'))
-      .pipe(gulp.dest('./.tmp/assets'));
+      .pipe(gulp.dest('./.tmp/assets'))
+      .pipe(connect.reload());
     done();
   })
 );
@@ -126,21 +127,30 @@ gulp.task('metalsmith:build-dev', gulp.series(
 
 // Webserver
 
-gulp.task('webserver', function (callback) {
-  gulp.src('./.tmp')
-    .pipe(webserver({
-      livereload: true,
-      directoryListing: false,
-      open: true
-    }));
+gulp.task('webserver', function (done) {
+  connect.server({
+    root: '.tmp',
+    livereload: true,
+  });
+  done();
 });
+
+function reload() {
+  return gulp.src('src/**/*').pipe(connect.reload());
+}
 
 // Watch
 
 gulp.task('watch', function (callback) {
   gulp.watch(
-    'src/assets/js/**/*.js',
-    gulp.task('webpack:build-dev')
+    [
+      'src/assets/index.js',
+      'src/assets/js/**/*.js',
+    ],
+    gulp.series(
+      'webpack:build-dev',
+      reload
+    )
   );
   gulp.watch(
     'src/assets/sass/**/*',
@@ -154,8 +164,8 @@ gulp.task('watch', function (callback) {
     ],
     gulp.series(
       'webpack:build-dev',
-      'sass:build-dev',
-      'metalsmith:build-dev'
+      'metalsmith:build-dev',
+      reload
     )
   );
 });
@@ -175,8 +185,7 @@ gulp.task('build-dev', gulp.series(
 ));
 
 gulp.task('serve', gulp.parallel(
-  'build-dev',
-  'webserver',
+  gulp.series('build-dev', 'webserver'),
   'watch'
 ));
 
