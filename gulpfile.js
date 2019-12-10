@@ -1,7 +1,8 @@
 var path = require('path');
 var gulp = require('gulp');
-var gutil = require('gulp-util');
 var rename = require('gulp-rename');
+var log = require('fancy-log');
+var PluginError = require('plugin-error');
 var del = require('del');
 var webpack = require('webpack');
 var webpackConfig = require('./webpack.config.js');
@@ -38,8 +39,8 @@ gulp.task('webpack:build', gulp.series(
     buildConfig.mode = 'production';
     buildConfig.output.path = path.join(__dirname, 'build', 'assets');
     webpack(buildConfig, function (err, stats) {
-      if (err) throw new gutil.PluginError("webpack", err);
-      gutil.log("[webpack] Stats:\n" + stats.toString({ colors: true }));
+      if (err) throw new PluginError("webpack", err);
+      log.error("[webpack] Stats:\n" + stats.toString({ colors: true }));
     });
     done();
   })
@@ -52,8 +53,8 @@ gulp.task('webpack:build-dev', gulp.series(
     buildConfig.mode = 'development';
     buildConfig.output.path = path.join(__dirname, '.tmp', 'assets');
     webpack(buildConfig, function (err, stats) {
-      if (err) throw new gutil.PluginError("webpack", err);
-      gutil.log("[webpack] Stats:\n" + stats.toString({ colors: true }));
+      if (err) throw new PluginError("webpack", err);
+      log.error("[webpack] Stats:\n" + stats.toString({ colors: true }));
     });
     done();
   })
