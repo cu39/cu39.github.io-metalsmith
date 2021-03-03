@@ -39,7 +39,7 @@
     "metalsmith-pug": "^2.0.0",
     "moment": "^2.24.0",
     "plugin-error": "^1.0.1",
-    "pug": "^2.0.4",
+    "pug": "^3.0.1",
     "webpack": "^4.41.2"
   }
 }
